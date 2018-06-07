@@ -2,18 +2,42 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 
+import Posts from './components/posts/posts'
+import AddPost from './components/posts/add_post'
+import EditPost from './components/posts/edit_post'
+import Post from './components/posts/show_post'
+
+import {
+  BrowserRouter,
+  Route,
+  Switch
+} from 'react-router-dom'
+
+import reducers from './reducers'
+
+import thunk from 'redux-thunk'
+import { Provider } from 'react-redux'
+import { createStore, applyMiddleware } from 'redux'
+
+const createStoreWithMiddleware = applyMiddleware(thunk)(createStore)
+const store = createStoreWithMiddleware(reducers, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__())
+
+
 class App extends Component {
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
-      </div>
+      <Provider store={store}>
+        <BrowserRouter>
+          <div>
+            <Switch>
+              <Route exact path="/" component={Posts} />
+              <Route exact path="/posts/create" component={AddPost} />
+              <Route exact path="/posts/:id/edit" component={EditPost} />
+              <Route exact path="/posts/:id" component={Post} />
+            </Switch>
+          </div>
+        </BrowserRouter>
+      </Provider>
     );
   }
 }
